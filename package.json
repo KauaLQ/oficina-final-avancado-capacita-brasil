@@ -1,0 +1,25 @@
+{
+  "name": "oficina-final-avancado-capacita-brasil",
+  "version": "1.0.0",
+  "description": "Criação de um servidor NODE.JS, que conecta com um banco de dados de uma escola.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KauaLQ/oficina-final-avancado-capacita-brasil.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KauaLQ/oficina-final-avancado-capacita-brasil/issues"
+  },
+  "homepage": "https://github.com/KauaLQ/oficina-final-avancado-capacita-brasil#readme",
+  "dependencies": {
+    "@prisma/client": "^6.5.0",
+    "express": "^4.21.2",
+    "prisma": "^6.5.0"
+  }
+}
