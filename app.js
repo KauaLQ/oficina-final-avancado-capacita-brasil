@@ -1,6 +1,7 @@
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
 const path = require('path');
+const { create } = require('domain');
 const app = express();
 const prisma = new PrismaClient();
 const port = process.env.PORT || 3000;
@@ -14,14 +15,23 @@ app.use(express.static(path.join(__dirname, 'assets')));
 
 // POST /api/alunos - Cria um novo aluno (recebe JSON no corpo da requisição)
 app.post('/api/alunos', async (req, res) => {
-    const { nome, email, idade } = req.body;
+    const { nome, email, idade, materias } = req.body;
+    const getRandomNota = () => parseFloat((Math.random() * 10).toFixed(2));
+    const numbers = materias.map(Number);
+
     try {
       const novoAluno = await prisma.Aluno.create({
         data: {
           nome,
           email,
-          idade: parseInt(idade)
-        }
+          idade: parseInt(idade),
+          boletins: {
+            create: numbers.map(disciplinaId => ({
+                disciplinaId,
+                nota: getRandomNota(),
+            })),
+            },
+        },
       });
       res.status(201).json(novoAluno);
     } catch (error) {
@@ -185,28 +195,28 @@ app.get('/alunos', async (req, res) => {
                             <legend>Matérias do Aluno:</legend>
                         
                             <div>
-                            <input type="checkbox" id="mat_one" name="mat_one" checked />
-                            <label for="mat_one">Informática Básica</label>
+                            <input type="checkbox" id="1" name="mat_one" checked />
+                            <label for="1">Informática Básica</label>
                             </div>
                         
                             <div>
-                            <input type="checkbox" id="mat_two" name="mat_two" />
-                            <label for="mat_two">Programação Orientada a Objetos</label>
+                            <input type="checkbox" id="2" name="mat_two" />
+                            <label for="2">Programação Orientada a Objetos</label>
                             </div>
             
                             <div>
-                                <input type="checkbox" id="mat_three" name="mat_three" />
-                                <label for="mat_three">Desenvolvimento Web</label>
+                                <input type="checkbox" id="3" name="mat_three" />
+                                <label for="3">Desenvolvimento Web</label>
                             </div>
             
                             <div>
-                                <input type="checkbox" id="mat_four" name="mat_four" />
-                                <label for="mat_four">Java com SpringBoot</label>
+                                <input type="checkbox" id="4" name="mat_four" />
+                                <label for="4">Java com SpringBoot</label>
                             </div>
             
                             <div>
-                                <input type="checkbox" id="mat_five" name="mat_five" />
-                                <label for="mat_five">Banco de Dados</label>
+                                <input type="checkbox" id="5" name="mat_five" />
+                                <label for="5">Banco de Dados</label>
                             </div>
                         </fieldset>
                     </div>
@@ -252,12 +262,19 @@ app.get('/alunos', async (req, res) => {
                     const nome = document.getElementById('nome').value;
                     const email = document.getElementById('email').value;
                     const idade = document.getElementById('idade').value;
+
+                    // Captura os checkboxes marcados e seus IDs
+                    const materiasSelecionadas = [];
+                    document.querySelectorAll('.subjects input[type="checkbox"]:checked').forEach(checkbox => {
+                        materiasSelecionadas.push(checkbox.id); // Agora captura o ID do checkbox
+                    });
+
                     const response = await fetch('/api/alunos', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ nome, email, idade })
+                    body: JSON.stringify({ nome, email, idade, materias: materiasSelecionadas })
                     });
                     if (response.ok) {
                     window.location.reload();

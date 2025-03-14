@@ -34,8 +34,8 @@ model Boletim {
   disciplinaId Int
   nota        Float?
   
-  aluno       Aluno     @relation(fields: [alunoId], references: [id])
-  disciplina  Disciplina @relation(fields: [disciplinaId], references: [id])
+  aluno       Aluno     @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+  disciplina  Disciplina @relation(fields: [disciplinaId], references: [id], onDelete: Cascade)
 
   @@unique([alunoId, disciplinaId]) // Garante que um aluno só tenha uma entrada por disciplina
 }
