@@ -22,10 +22,22 @@ model Aluno {
   boletins  Boletim[]
 }
 
+model Professor {
+  id           Int       @id @default(autoincrement())
+  nome         String
+  email        String    @unique
+  idade        Int
+  createdAt    DateTime  @default(now())
+  disciplinaId Int       @unique
+
+  disciplina   Disciplina @relation(fields: [disciplinaId], references: [id], onDelete: Cascade)
+}
+
 model Disciplina {
-  id    Int    @id @default(autoincrement())
-  nome  String @unique
-  boletins Boletim[]
+  id          Int         @id @default(autoincrement())
+  nome        String      @unique
+  boletins    Boletim[]
+  professores Professor[] // Um relacionamento inverso para facilitar queries
 }
 
 model Boletim {

@@ -302,7 +302,7 @@ th, td{
     }
 }
 
-/* =============================================PÀGINA BOLETINS================================================== */
+/* =============================================PÁGINA BOLETINS================================================== */
 
 /* Grupo do input de pesquisa */
 .input-group {
@@ -335,4 +335,14 @@ th, td{
     border: none;
     outline: none;
     background-color: transparent;
+}
+
+.create .informations .subjects input[type="radio"] {
+    accent-color: #4CAF50;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.create .informations .subjects input[type="radio"]:hover {
+    filter: brightness(1.2);
 }

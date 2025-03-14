@@ -71,6 +71,61 @@ app.delete('/api/alunos/:id', async (req, res) => {
     }
 });
 
+// POST /api/professores - Cria um novo professor (recebe JSON no corpo da requisição)
+app.post('/api/professores', async (req, res) => {
+    const { nome, email, idade, materia } = req.body;
+
+    console.log(materia);
+
+    try {
+      const novoAluno = await prisma.Professor.create({
+        data: {
+          nome,
+          email,
+          idade: parseInt(idade),
+          disciplinaId: parseInt(materia),
+        },
+      });
+      res.status(201).json(novoAluno);
+    } catch (error) {
+      res.status(500).json({ error: 'Erro ao criar professor' });
+    }
+});
+  
+// PUT /api/professores/:id - Atualiza um professor existente pelo ID
+app.put('/api/professores/:id', async (req, res) => {
+    const { id } = req.params;
+    const { nome, email, idade } = req.body;
+    try {
+      const alunoAtualizado = await prisma.Professor.update({
+        where: { id: parseInt(id) },
+        data: {
+          nome,
+          email,
+          idade: parseInt(idade)
+        }
+      });
+      res.json(alunoAtualizado);
+    } catch (error) {
+      res.status(500).json({ error: 'Erro ao atualizar professor' });
+    }
+});
+
+// DELETE /api/professores/:id - Remove um professor pelo ID
+app.delete('/api/professores/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+      await prisma.Professor.delete({
+        where: { id: parseInt(id) }
+      });
+      res.json({ message: 'professor removido com sucesso' });
+    } catch (error) {
+      res.status(500).json({ error: 'Erro ao remover professor' });
+    }
+});
+
+// =================================APLICAÇÃO "FRONT_END"=================================
+
 //Rota raíz da URL
 app.get('/',(req, res) => {
     const html = `
@@ -94,7 +149,7 @@ app.get('/',(req, res) => {
                     <nav>
                         <ul>
                             <li class="li-father"><i class="fa-solid fa-user"></i><a href='/alunos'>ALUNOS</a></li>
-                            <li class="li-father"><i class="fa-solid fa-user-tie"></i><a href="#">PROFESSORES</a></li>
+                            <li class="li-father"><i class="fa-solid fa-user-tie"></i><a href='/professores'>PROFESSORES</a></li>
                             <li class="li-father"><i class="fa-solid fa-book"></i><a href='/boletins'>BOLETINS</a></li>
                         </ul>
                     </nav>
@@ -311,6 +366,235 @@ app.get('/alunos', async (req, res) => {
                 async function deleteAluno(id) {
                     if (confirm('Deseja realmente remover este aluno?')) {
                     const response = await fetch('/api/alunos/' + id, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        alert('Erro ao remover aluno');
+                    }
+                    }
+                }
+            </script>
+        </body>
+        </html>
+        `
+        res.send(html);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao buscar dados dos alunos.');
+    }
+})
+
+app.get('/professores', async (req, res) => {
+    try{
+        const professores = await prisma.Professor.findMany({
+            include: {
+              disciplina: true, // Traz os dados da disciplina
+            },
+          });
+        let html = `
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Escola Digital</title>
+            <link rel="stylesheet" type="text/css" href="/style.css" />
+            <link rel="shortcut icon" type="image/png" href="/logo_escola.png">
+            <script src="https://kit.fontawesome.com/a264ca8e95.js" crossorigin="anonymous"></script>
+        </head>
+        <body>
+            <header id="header-alunos">
+                <div class="container-header">
+                    <div class="banner-wellcome">
+                        <img src="/logo_escola.png" alt="logo da escola">
+                        <div class="back">
+                            <i class="fa-solid fa-square-xmark" onclick="location.href='/'"></i>
+                            <p>ENCERRAR</p>
+                            <p>SESSÃO</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="icon-name">
+                        <i class="fa-solid fa-user-tie"></i>
+                        <p>GERENCIAMENTO DE PROFESSORES</p>
+                    </div>
+                    <hr>
+                    <div class="line"></div>
+                </div>
+            </header>
+
+            <main>
+                <p class="title">PROFESSORES CADASTRADOS</p>
+
+                <div class="topic-table">
+                    <table border="1px">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Idade</th>
+                            <th>Disciplina</th>
+                            <th>Ações</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+        `;
+
+        professores.forEach(Professor => {
+            html += `
+            <tr>
+            <td>${Professor.id}</td>
+            <td>${Professor.nome}</td>
+            <td>${Professor.email}</td>
+            <td>${Professor.idade}</td>
+            <td>${Professor.disciplina.nome}</td>
+            <td>
+                <div class="actions">
+                    <i class="fa-solid fa-user-xmark" onclick="deleteAluno(${Professor.id})"></i>
+                    <i class="fa-solid fa-user-pen" onclick="editarCadastro(${Professor.id})"></i>
+                </div>
+            </td>
+            </tr>
+            `;
+        });
+
+        html += `
+                </tbody>
+                    </table>
+                </div>
+
+                <p class="title">CADASTRAR NOVO PROFESSOR</p>
+
+                <form action="#" class="create" id="novoAlunoForm">
+                    <div class="informations">
+                        <div class="fields">
+                            <input type="text" name="nome" id="nome" placeholder="Nome" required>
+                            <input type="email" name="email" id="email" placeholder="Email" required>
+                            <input type="number" name="idade" id="idade" placeholder="Idade" required>
+                        </div>
+
+                        <fieldset class="subjects">
+                            <legend>Matéria do Docente:</legend>
+                        
+                            <div>
+                            <input type="radio" id="1" name="group" checked />
+                            <label for="1">Informática Básica</label>
+                            </div>
+                        
+                            <div>
+                            <input type="radio" id="2" name="group" />
+                            <label for="2">Programação Orientada a Objetos</label>
+                            </div>
+            
+                            <div>
+                                <input type="radio" id="3" name="group" />
+                                <label for="3">Desenvolvimento Web</label>
+                            </div>
+            
+                            <div>
+                                <input type="radio" id="4" name="group" />
+                                <label for="4">Java com SpringBoot</label>
+                            </div>
+            
+                            <div>
+                                <input type="radio" id="5" name="group" />
+                                <label for="5">Banco de Dados</label>
+                            </div>
+                        </fieldset>
+                    </div>
+                    
+                    <button type="submit" name="cadastrar" id="cadastrar">CRIAR<i class="fa-solid fa-user-plus"></i></button>
+                </form>
+
+                <br>
+            </main>
+
+            <div class="janela-modal" id="janela-modal">
+                <form action="#" class="create" id="atualizarAlunoForm">
+                    <div class="informations">
+                        <div class="fields">
+                            <input type="text" name="nome_new" id="nome_new" placeholder="Nome" required>
+                            <input type="email" name="email_new" id="email_new" placeholder="Email" required>
+                            <input type="number" name="idade_new" id="idade_new" placeholder="Idade" required>
+                        </div> 
+                    </div>
+                    <button type="submit" name="cadastrar" id="cadastrar">ENVIAR<i class="fa-solid fa-upload"></i></button>
+                </form>
+            </div>
+
+            <script>
+
+                let alunoId = null; // Variável global para armazenar o ID do aluno
+
+                function editarCadastro(id){
+                    alunoId = id; // Armazena o ID do aluno para atualização
+                    const modal = document.getElementById('janela-modal')
+                    modal.classList.add('abrir')
+
+                    modal.addEventListener('click', (e) => {
+                        if(e.target.id == 'janela-modal'){
+                            modal.classList.remove('abrir')
+                        }
+                    })
+                }
+
+                // Adicionar novo professor via fetch API (POST)
+                document.getElementById('novoAlunoForm').addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const nome = document.getElementById('nome').value;
+                    const email = document.getElementById('email').value;
+                    const idade = document.getElementById('idade').value;
+
+                    // Captura o radioButton marcado
+                    const materia = document.querySelector('input[name="group"]:checked')?.id || "Nenhuma selecionada";
+                    console.log(materia);
+
+                    const response = await fetch('/api/professores', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ nome, email, idade, materia })
+                    });
+                    if (response.ok) {
+                    window.location.reload();
+                    } else {
+                    alert('Erro ao adicionar aluno');
+                    }
+                });
+
+                // Atualizar aluno via fetch API (PUT)
+                document.getElementById('atualizarAlunoForm').addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    if (!alunoId) {
+                        alert('Erro: Nenhum aluno selecionado para atualização.');
+                        return;
+                    }
+                    const nome = document.getElementById('nome_new').value;
+                    const email = document.getElementById('email_new').value;
+                    const idade = document.getElementById('idade_new').value;
+                    const response = await fetch('/api/professores/' + alunoId, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ nome, email, idade })
+                    });
+                    if (response.ok) {
+                    window.location.reload();
+                    } else {
+                    alert('Erro ao atualizar aluno');
+                    }
+                });
+
+                // Remover aluno via fetch API (DELETE)
+                async function deleteAluno(id) {
+                    if (confirm('Deseja realmente remover este aluno?')) {
+                    const response = await fetch('/api/professores/' + id, {
                         method: 'DELETE'
                     });
                     if (response.ok) {
