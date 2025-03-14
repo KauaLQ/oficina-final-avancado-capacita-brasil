@@ -74,9 +74,6 @@ app.delete('/api/alunos/:id', async (req, res) => {
 // POST /api/professores - Cria um novo professor (recebe JSON no corpo da requisição)
 app.post('/api/professores', async (req, res) => {
     const { nome, email, idade, materia } = req.body;
-
-    console.log(materia);
-
     try {
       const novoAluno = await prisma.Professor.create({
         data: {
