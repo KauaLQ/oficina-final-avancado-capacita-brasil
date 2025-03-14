@@ -95,7 +95,7 @@ app.get('/',(req, res) => {
                         <ul>
                             <li class="li-father"><i class="fa-solid fa-user"></i><a href='/alunos'>ALUNOS</a></li>
                             <li class="li-father"><i class="fa-solid fa-user-tie"></i><a href="#">PROFESSORES</a></li>
-                            <li class="li-father"><i class="fa-solid fa-book"></i><a href="#">BOLETINS</a></li>
+                            <li class="li-father"><i class="fa-solid fa-book"></i><a href='/boletins'>BOLETINS</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -236,7 +236,7 @@ app.get('/alunos', async (req, res) => {
                             <input type="number" name="idade_new" id="idade_new" placeholder="Idade" required>
                         </div> 
                     </div>
-                    <button type="submit" name="cadastrar" id="cadastrar">ENVIAR<i class="fa-solid fa-user-plus"></i></button>
+                    <button type="submit" name="cadastrar" id="cadastrar">ENVIAR<i class="fa-solid fa-upload"></i></button>
                 </form>
             </div>
 
@@ -329,6 +329,145 @@ app.get('/alunos', async (req, res) => {
     catch (error) {
         console.error(error);
         res.status(500).send('Erro ao buscar dados dos alunos.');
+    }
+})
+
+app.get('/boletins', async (req, res) => {
+    try{
+        const boletins = await prisma.Boletim.findMany({
+            include: {
+              aluno: true, // Traz os dados do aluno
+              disciplina: true, // Traz os dados da disciplina
+            },
+          });
+        let html = `
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Escola Digital</title>
+            <link rel="stylesheet" type="text/css" href="/style.css" />
+            <link rel="shortcut icon" type="image/png" href="/logo_escola.png">
+            <script src="https://kit.fontawesome.com/a264ca8e95.js" crossorigin="anonymous"></script>
+        </head>
+        <body>
+            <header id="header-alunos">
+                <div class="container-header">
+                    <div class="banner-wellcome">
+                        <img src="/logo_escola.png" alt="logo da escola">
+                        <div class="back">
+                            <i class="fa-solid fa-square-xmark" onclick="location.href='/'"></i>
+                            <p>ENCERRAR</p>
+                            <p>SESSÃO</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="icon-name">
+                        <i class="fa-solid fa-book"></i>
+                        <p>BOLETINS POR ALUNOS</p>
+                    </div>
+                    <hr>
+                    <div class="line"></div>
+                </div>
+            </header>
+
+            <main>
+                <!-- Input de pesquisa -->
+                <div class="input-group">
+                    <!-- Ícone da lupa -->
+                    <div class="input-icon">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+
+                    <!-- Campo de input de pesquisa -->
+                    <input 
+                        id="search" 
+                        type="text" 
+                        class="input-field" 
+                        placeholder="Pesquisar"
+                    >
+                </div>
+
+                <div class="topic-table">
+                    <table border="1px">
+                        <thead>
+                        <tr>
+                            <th>Aluno</th>
+                            <th>Disciplina</th>
+                            <th>Nota</th>
+                        </tr>
+                        </thead>
+                        <tbody class="items">
+        `;
+
+        boletins.forEach(Boletim => {
+            html += `
+            <tr class="item">
+            <td>${Boletim.aluno.nome}</td>
+            <td>${Boletim.disciplina.nome}</td>
+            <td>${Boletim.nota}</td>
+            </tr>
+            `;
+        });
+
+        html += `
+        </tbody>
+        </table>
+        </div>
+
+        <br>
+        </main>
+
+        <script>
+            // Seleciona o input de busca
+            const searchInput = document.getElementById('search');
+
+            // Quando o usuário interagir com o input, esta função será executada
+            searchInput.addEventListener('input', (event) => {
+            const value = formatString(event.target.value); // Armazena e formata o valor do input
+
+            const items = document.querySelectorAll('.items .item'); // Seleciona todos os itens
+            
+            // Se existir valor no input
+            if (value !== '') {
+                items.forEach(item => {
+                    // Se o valor digitado está contido nesse texto
+                    if (formatString(item.textContent).indexOf(value) !== -1) {
+                        // Exibe o item
+                        item.classList.remove('ocultar')
+
+                        // Indica que existem resultados
+                        hasResults = true;
+                    } else {
+                        // Oculta o item
+                        item.classList.add('ocultar')
+                    }
+                });
+
+                } else {
+                    // Sempre exibe todos os itens quando o input está vazio
+                    items.forEach(item => item.classList.remove('ocultar'));
+                }
+            });
+
+            // Função para formatar strings: remove espaços em branco, transforma em lowercase e remove acentos
+            function formatString(value) {
+                return value
+                    .trim() // Remove espaços em branco
+                    .toLowerCase() // Transforma em lowercase
+                    .normalize('NFD') // Normaliza para separar os acentos
+                    .replace(/[\u0300-\u036f]/g, ''); // Remove os acentos
+            }
+        </script>
+        </body>
+        </html>
+        `;
+
+        res.send(html);
+    }catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao buscar boletins.');
     }
 })
 
