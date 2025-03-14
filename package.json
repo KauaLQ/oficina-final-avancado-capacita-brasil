@@ -19,7 +19,11 @@
   "homepage": "https://github.com/KauaLQ/oficina-final-avancado-capacita-brasil#readme",
   "dependencies": {
     "@prisma/client": "^6.5.0",
+    "cors": "^2.8.5",
     "express": "^4.21.2",
     "prisma": "^6.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }

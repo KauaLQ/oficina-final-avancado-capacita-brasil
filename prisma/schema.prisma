@@ -12,3 +12,30 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Aluno {
+  id        Int         @id @default(autoincrement())
+  nome      String
+  email     String      @unique
+  idade     Int
+  createdAt DateTime    @default(now())
+  boletins  Boletim[]
+}
+
+model Disciplina {
+  id    Int    @id @default(autoincrement())
+  nome  String @unique
+  boletins Boletim[]
+}
+
+model Boletim {
+  id          Int       @id @default(autoincrement())
+  alunoId     Int
+  disciplinaId Int
+  nota        Float?
+  
+  aluno       Aluno     @relation(fields: [alunoId], references: [id])
+  disciplina  Disciplina @relation(fields: [disciplinaId], references: [id])
+
+  @@unique([alunoId, disciplinaId]) // Garante que um aluno só tenha uma entrada por disciplina
+}

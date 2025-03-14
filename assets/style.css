@@ -1,0 +1,299 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+html {
+    scroll-behavior: smooth
+}  
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Noto Sans", sans-serif;
+    font-style: normal;
+}
+
+header{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+header .container{
+    display: flex;
+    min-width: 60%;
+    height: 400px;
+    background-color: #fff;
+    border-left: #000 1px solid;
+    border-right: #000 1px solid;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+header .image{
+    background-image: url('/parede_tijolos.jpg');
+    background-size: cover; /* Ajusta a imagem para cobrir toda a área */
+    background-position: center; /* Centraliza a imagem */
+    background-repeat: no-repeat; /* Evita repetição da imagem */
+    padding: 80px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #999999;
+}
+
+header .menu{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #E2CFA4;
+    padding: 85px 40px 85px 0px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #999999;
+}
+
+header .menu ul{
+    list-style: none;
+}
+
+header .menu li {
+	margin: 0 15px;
+    padding: 15px;
+}
+
+header .menu a {
+	color: #000;
+	text-decoration: none;
+}
+
+header .menu a:hover{
+    color: #fff;
+}
+
+header .menu i{
+    border: #000 1px solid;
+    padding: 3px;
+    margin-right: 15px;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #F7F2E7;
+}
+
+/* =====================================================Estilização da Página Alunos======================================================= */
+
+#header-alunos{
+    display: flex;
+    justify-content: center;
+}
+
+#header-alunos img{
+    width: 150px;
+    margin-bottom: 2%;
+}
+
+#header-alunos .container-header{
+    margin-top: 1%;
+    min-width: 60%;
+}
+
+#header-alunos .container-header .banner-wellcome{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#header-alunos .container-header .banner-wellcome .back{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#header-alunos .container-header .banner-wellcome .back i{
+    color: red;
+    font-size: 150%;
+    cursor: pointer;
+}
+
+#header-alunos .container-header .banner-wellcome .back p{
+    font-size: small;
+}
+
+#header-alunos .container-header .icon-name{
+    display: flex;
+    gap: 10px;
+    padding: 5px 0px 5px 0px;
+}
+
+#header-alunos .container-header .line{
+    height: 5px;
+    background-color: #999999;
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #e2d5b7;
+    min-width: 60%;
+    margin: 20px 0px 20px 0px;
+    border-radius: 10px;
+    border-left: 1px black solid;
+    border-right: 1px black solid;
+}
+
+main .title{
+    margin: 25px 0px 25px 0px;
+}
+
+table{
+    max-width: 700px;
+    border-collapse: collapse;
+    background-color: #e7e7e7;
+    font-size: 14px;
+    border-style: hidden;
+    border-radius: 15px;
+}
+
+thead{
+    background-color: #999999;
+    border-radius: 15px;
+}
+
+th, td{
+    padding: 10px;
+    color: #000;
+}
+
+.actions{
+    display: flex;
+    gap: 7px;
+    cursor: pointer;
+}
+
+.create{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.create .informations{
+    display: flex;
+    gap: 20px;
+}
+
+.create .informations .fields{
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    gap: 12px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.create .informations .fields input{
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.create .informations .fields input:focus{
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+.create .informations .subjects {
+    border: none;
+    border-radius: 10px;
+    padding: 20px;
+    width: 350px;
+    background: #f9f9f9;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.create .informations .subjects legend {
+    font-weight: bold;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background: #e7e7e7;
+}
+
+.create .informations .subjects div {
+    margin: 10px 0;
+}
+
+.create .informations .subjects input[type="checkbox"] {
+    accent-color: #4CAF50;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.create .informations .subjects label {
+    margin-left: 8px;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+}
+
+.create .informations .subjects input[type="checkbox"]:hover {
+    filter: brightness(1.2);
+}
+
+.create button{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: #4CAF50;
+    width: 80px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 5px 0 5px 0;
+    transition: 0.3s;
+    box-shadow: 0 0 10px #999999;
+}
+
+.create button:hover{
+    background-color: #488049;
+}
+
+/* ========================================================JANELA MODAL=========================================================== */
+
+.janela-modal{
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    position: fixed;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: #00000080;
+    z-index: 999;
+}
+
+.janela-modal.abrir{
+    display: flex;
+}
+
+.abrir .create{
+    animation: abrirModal 0.5s;
+}
+
+@keyframes abrirModal {
+    from{
+        opacity: 0;
+        transform: translate3d(0, -20px, -5px);
+    }
+    to{
+        opacity: 1;
+        transform: translate3d(0,0,0);
+    }
+}
